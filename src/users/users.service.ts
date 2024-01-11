@@ -5,7 +5,7 @@ export type User = any;
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
+  private users = [
     {
       userId: 1,
       username: 'john',
@@ -20,5 +20,19 @@ export class UsersService {
 
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
+  }
+
+  async create(username: string, password: string): Promise<User | undefined> {
+    const user = this.users.find((user) => user.username === username);
+    if (user) {
+      return undefined;
+    }
+    const newUser = {
+      userId: this.users.length + 1,
+      username: username,
+      password: password,
+    };
+    this.users.push(newUser);
+    return newUser;
   }
 }
