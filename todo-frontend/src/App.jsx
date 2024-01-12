@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import TodoList from './Todo';
 function App() {
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -70,7 +71,7 @@ function App() {
       </>
     );
 
-  return <h1>TODO LIST</h1>;
+  return <TodoList />;
 }
 
 export default App;
