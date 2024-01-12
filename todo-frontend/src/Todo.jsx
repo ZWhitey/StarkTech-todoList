@@ -6,7 +6,6 @@ import axios from 'axios';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
-  const [selectedTodo, setSelectedTodo] = useState(null);
   const [selectedTodoIndex, setSelectedTodoIndex] = useState(null);
   useEffect(() => {
     getTodos();
@@ -42,14 +41,13 @@ function TodoList() {
       description,
       due_date: dueDate,
     });
-    setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
-    setSelectedTodo(res.data);
-    console.log(res.data, todos, selectedTodo, selectedTodoIndex);
+    await getTodos();
   }
 
   async function handleDeleteTodo(id) {
     await axios.delete(`http://localhost:3000/todo/${id}`);
-    setTodos(todos.filter((todo) => todo.id !== id));
+    await getTodos();
+    setSelectedTodoIndex(null);
   }
 
   async function handleToggleTodoComplete(e, id) {
@@ -57,12 +55,11 @@ function TodoList() {
     const res = await axios.patch(`http://localhost:3000/todo/${id}`, {
       done: e.target.checked,
     });
-    setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
+    await getTodos();
   }
 
   async function handleOpenTodo(index) {
-    console.log('open todo', index);
-    setSelectedTodo(todos[index]);
+    console.log('open todo', index, todos);
     setSelectedTodoIndex(index);
   }
 
@@ -99,22 +96,22 @@ function TodoList() {
             </ListGroup>
           </div>
 
-          {selectedTodo !== null && (
+          {selectedTodoIndex !== null && (
             <Card key={selectedTodoIndex}>
-              <Card.Title>{selectedTodo?.title}</Card.Title>
+              <Card.Title>{todos[selectedTodoIndex]?.title}</Card.Title>
               <Card.Body>
                 <form id="edit-todo" onSubmit={handleEditTodo} />
                 <input
                   form="edit-todo"
                   type="hidden"
-                  value={selectedTodo?.id}
+                  value={todos[selectedTodoIndex]?.id}
                 />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <label>Title: </label>
                   <input
                     form="edit-todo"
                     placeholder="Title"
-                    defaultValue={selectedTodo?.title}
+                    defaultValue={todos[selectedTodoIndex]?.title}
                   />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -122,7 +119,7 @@ function TodoList() {
                   <input
                     form="edit-todo"
                     placeholder="Description"
-                    defaultValue={selectedTodo?.description}
+                    defaultValue={todos[selectedTodoIndex]?.description}
                   />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -130,8 +127,40 @@ function TodoList() {
                   <input
                     form="edit-todo"
                     type="date"
-                    defaultValue={selectedTodo?.due_date}
+                    defaultValue={todos[selectedTodoIndex]?.due_date}
                   />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label>Done: </label>
+                  <input
+                    checked={todos[selectedTodoIndex]?.done}
+                    type="checkbox"
+                    onClick={(e) =>
+                      handleToggleTodoComplete(e, todos[selectedTodoIndex]?.id)
+                    }
+                  />
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <label>Watcher: </label>
+                  {todos[selectedTodoIndex]?.watcher?.map((watcher) => (
+                    <span>{watcher}</span>
+                  )) ?? 'N/A'}
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <label>Assignee: </label>
+                  {todos[selectedTodoIndex]?.assignee?.map((assignee) => (
+                    <span>{assignee}</span>
+                  )) ?? 'N/A'}
                 </div>
 
                 <Button form="edit-todo" type="submit">
@@ -139,7 +168,7 @@ function TodoList() {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={() => handleDeleteTodo(selectedTodo?.id)}
+                  onClick={() => handleDeleteTodo(todos[selectedTodoIndex]?.id)}
                 >
                   Delete
                 </Button>
@@ -148,68 +177,6 @@ function TodoList() {
           )}
         </div>
       </div>
-      {/* <div>
-        <h2>Todo List</h2>
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Due Date</th>
-              <th>Watcher</th>
-              <th>Assignee</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {todos.map((todo) => (
-              <tr key={todo.id}>
-                <form id="edit-todo" onSubmit={handleEditTodo} />
-                <td>
-                  <input
-                    checked={todo.done}
-                    type="checkbox"
-                    onClick={(e) => handleToggleTodoComplete(e, todo.id)}
-                  />
-                </td>
-                <td>
-                  <input form="edit-todo" type="hidden" value={todo.id} />
-                  <input
-                    form="edit-todo"
-                    placeholder="Title"
-                    defaultValue={todo.title}
-                  />
-                </td>
-                <td>
-                  <input
-                    form="edit-todo"
-                    placeholder="Description"
-                    defaultValue={todo.description}
-                  />
-                </td>
-                <td>
-                  <input
-                    form="edit-todo"
-                    type="date"
-                    defaultValue={todo.due_date}
-                  />
-                </td>
-                <td>{todo.watcher?.join(',') ?? 'N/A'}</td>
-                <td>{todo.assignee?.join(',') ?? 'N/A'}</td>
-                <td>
-                  <button form="edit-todo" onSubmit={handleEditTodo}>
-                    Edit
-                  </button>
-                  <button onClick={() => handleDeleteTodo(todo.id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div> */}
     </>
   );
 }
