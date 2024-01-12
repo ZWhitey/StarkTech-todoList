@@ -76,6 +76,8 @@ function TodoList() {
               <th>Title</th>
               <th>Description</th>
               <th>Due Date</th>
+              <th>Watcher</th>
+              <th>Assignee</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -112,6 +114,8 @@ function TodoList() {
                     defaultValue={todo.due_date}
                   />
                 </td>
+                <td>{todo.watcher?.join(',') ?? 'N/A'}</td>
+                <td>{todo.assignee?.join(',') ?? 'N/A'}</td>
                 <td>
                   <button form="edit-todo" onSubmit={handleEditTodo}>
                     Edit
