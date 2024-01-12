@@ -3,4 +3,6 @@ export class CreateTodoDto {
   description: string;
   done: boolean;
   dueDate: Date;
+  watcher?: number[];
+  assignee?: number[];
 }

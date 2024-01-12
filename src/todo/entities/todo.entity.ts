@@ -6,4 +6,6 @@ export class Todo {
   public readonly dueDate: Date;
   public readonly createdAt: Date;
   public readonly owner: number;
+  public readonly watcher?: number[];
+  public readonly assignee?: number[];
 }

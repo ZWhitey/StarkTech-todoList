@@ -8,7 +8,7 @@ export class TodoService {
   todoList: Todo[] = [];
 
   create(createTodoDto: CreateTodoDto) {
-    const newTodo = {
+    const newTodo: Todo = {
       id: this.todoList.length + 1,
       createdAt: new Date(),
       owner: 1,
