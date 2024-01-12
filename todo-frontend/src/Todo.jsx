@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
+  const [selectedTodo, setSelectedTodo] = useState(null);
+  const [selectedTodoIndex, setSelectedTodoIndex] = useState(null);
   useEffect(() => {
     getTodos();
   }, []);
@@ -38,6 +43,8 @@ function TodoList() {
       due_date: dueDate,
     });
     setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
+    setSelectedTodo(res.data);
+    console.log(res.data, todos, selectedTodo, selectedTodoIndex);
   }
 
   async function handleDeleteTodo(id) {
@@ -51,6 +58,12 @@ function TodoList() {
       done: e.target.checked,
     });
     setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
+  }
+
+  async function handleOpenTodo(index) {
+    console.log('open todo', index);
+    setSelectedTodo(todos[index]);
+    setSelectedTodoIndex(index);
   }
 
   return (
@@ -68,6 +81,74 @@ function TodoList() {
         </form>
       </div>
       <div>
+        <h2>Todo List</h2>
+        <div style={{ display: 'flex' }}>
+          <div>
+            <ListGroup>
+              {todos &&
+                todos.map((todo, index) => (
+                  <ListGroup.Item
+                    key={'list-' + index}
+                    action
+                    onClick={() => handleOpenTodo(index)}
+                    active={selectedTodoIndex === index}
+                  >
+                    {todo.title}
+                  </ListGroup.Item>
+                ))}
+            </ListGroup>
+          </div>
+
+          {selectedTodo !== null && (
+            <Card key={selectedTodoIndex}>
+              <Card.Title>{selectedTodo?.title}</Card.Title>
+              <Card.Body>
+                <form id="edit-todo" onSubmit={handleEditTodo} />
+                <input
+                  form="edit-todo"
+                  type="hidden"
+                  value={selectedTodo?.id}
+                />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label>Title: </label>
+                  <input
+                    form="edit-todo"
+                    placeholder="Title"
+                    defaultValue={selectedTodo?.title}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label>Description: </label>
+                  <input
+                    form="edit-todo"
+                    placeholder="Description"
+                    defaultValue={selectedTodo?.description}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label>Due Date: </label>
+                  <input
+                    form="edit-todo"
+                    type="date"
+                    defaultValue={selectedTodo?.due_date}
+                  />
+                </div>
+
+                <Button form="edit-todo" type="submit">
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleDeleteTodo(selectedTodo?.id)}
+                >
+                  Delete
+                </Button>
+              </Card.Body>
+            </Card>
+          )}
+        </div>
+      </div>
+      {/* <div>
         <h2>Todo List</h2>
         <table>
           <thead>
@@ -128,7 +209,7 @@ function TodoList() {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </>
   );
 }
