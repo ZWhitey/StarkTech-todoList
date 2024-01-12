@@ -45,6 +45,14 @@ function TodoList() {
     setTodos(todos.filter((todo) => todo.id !== id));
   }
 
+  async function handleToggleTodoComplete(e, id) {
+    e.preventDefault();
+    const res = await axios.patch(`http://localhost:3000/todo/${id}`, {
+      done: e.target.checked,
+    });
+    setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
+  }
+
   return (
     <>
       <div>
@@ -64,6 +72,7 @@ function TodoList() {
         <table>
           <thead>
             <tr>
+              <th></th>
               <th>Title</th>
               <th>Description</th>
               <th>Due Date</th>
@@ -74,6 +83,13 @@ function TodoList() {
             {todos.map((todo) => (
               <tr key={todo.id}>
                 <form id="edit-todo" onSubmit={handleEditTodo} />
+                <td>
+                  <input
+                    checked={todo.done}
+                    type="checkbox"
+                    onClick={(e) => handleToggleTodoComplete(e, todo.id)}
+                  />
+                </td>
                 <td>
                   <input form="edit-todo" type="hidden" value={todo.id} />
                   <input
