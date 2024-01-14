@@ -28,8 +28,9 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  findAll(@Request() req) {
+    const userId = new Types.ObjectId(req.user.sub);
+    return this.todoService.findAll(userId);
   }
 
   @UseGuards(AuthGuard)
