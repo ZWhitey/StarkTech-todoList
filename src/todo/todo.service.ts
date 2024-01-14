@@ -1,49 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { Todo } from './entities/todo.entity';
+import { Todo, TodoDocument } from '../schemas/todo.schema';
+import { Model, Types } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class TodoService {
-  todoList: Todo[] = [];
+  constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
 
-  create(createTodoDto: CreateTodoDto) {
+  async create(createTodoDto: CreateTodoDto) {
     const newTodo: Todo = {
-      id: this.todoList.length + 1,
       createdAt: new Date(),
-      owner: 1,
+      owner: new Types.ObjectId('65a3f14d4a42d9f3cce3e92a'),
       ...createTodoDto,
     };
-    this.todoList.push(newTodo);
-    return newTodo;
+
+    return await this.todoModel.create(newTodo);
   }
 
-  findAll() {
-    return this.todoList;
+  async findAll() {
+    return await this.todoModel.find();
   }
 
-  findOne(id: number) {
-    return this.todoList.find((todo) => todo.id === id);
+  async findOne(id: Types.ObjectId) {
+    return await this.todoModel.findById(id);
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    const todo = this.findOne(id);
-    if (!todo) {
-      return null;
-    }
-    const updatedTodo = {
-      ...todo,
-      ...updateTodoDto,
-    };
-    this.todoList = this.todoList.map((todo) =>
-      todo.id === id ? updatedTodo : todo,
-    );
-    return updatedTodo;
+  async update(id: Types.ObjectId, updateTodoDto: UpdateTodoDto) {
+    return await this.todoModel.findByIdAndUpdate(id, updateTodoDto);
   }
 
-  remove(id: number) {
-    const countBefore = this.todoList.length;
-    this.todoList = this.todoList.filter((todo) => todo.id !== id);
-    return countBefore - this.todoList.length;
+  async remove(id: Types.ObjectId) {
+    return await this.todoModel.findByIdAndDelete(id);
   }
 }

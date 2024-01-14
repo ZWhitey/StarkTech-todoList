@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -27,16 +28,16 @@ export class TodoController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.todoService.findOne(+id);
+    return this.todoService.findOne(new Types.ObjectId(id));
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(+id, updateTodoDto);
+    return this.todoService.update(new Types.ObjectId(id), updateTodoDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
+    return this.todoService.remove(new Types.ObjectId(id));
   }
 }
