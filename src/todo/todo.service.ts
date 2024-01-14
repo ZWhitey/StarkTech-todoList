@@ -12,7 +12,6 @@ export class TodoService {
   async create(createTodoDto: CreateTodoDto) {
     const newTodo: Todo = {
       createdAt: new Date(),
-      owner: new Types.ObjectId('65a3f14d4a42d9f3cce3e92a'),
       ...createTodoDto,
     };
 

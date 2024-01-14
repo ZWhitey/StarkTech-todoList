@@ -20,10 +20,12 @@ function App() {
         });
 
         setUser(res.data);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
     } catch (error) {
       console.error(error);
       localStorage.removeItem('access_token');
+      delete axios.defaults.headers.common['Authorization'];
     }
   }
 

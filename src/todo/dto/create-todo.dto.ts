@@ -5,6 +5,7 @@ export class CreateTodoDto {
   description: string;
   done: boolean;
   dueDate: Date;
+  owner: Types.ObjectId;
   watcher?: Types.ObjectId[];
   assignee?: Types.ObjectId[];
 }
