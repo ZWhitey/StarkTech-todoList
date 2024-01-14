@@ -3,6 +3,7 @@ import './App.css';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import TodoList from './Todo';
+import Button from 'react-bootstrap/esm/Button';
 function App() {
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -51,6 +52,12 @@ function App() {
     console.log(res.data);
   }
 
+  async function handleLogout() {
+    localStorage.removeItem('access_token');
+    delete axios.defaults.headers.common['Authorization'];
+    setUser(null);
+  }
+
   if (!user)
     return (
       <>
@@ -73,7 +80,14 @@ function App() {
       </>
     );
 
-  return <TodoList />;
+  return (
+    <>
+      <Button variant="danger" onClick={handleLogout}>
+        Logout
+      </Button>
+      <TodoList />;
+    </>
+  );
 }
 
 export default App;
