@@ -104,7 +104,7 @@ function TodoList() {
                 <input
                   form="edit-todo"
                   type="hidden"
-                  value={todos[selectedTodoIndex]?.id}
+                  value={todos[selectedTodoIndex]?._id}
                 />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <label>Title: </label>
@@ -136,7 +136,7 @@ function TodoList() {
                     checked={todos[selectedTodoIndex]?.done}
                     type="checkbox"
                     onClick={(e) =>
-                      handleToggleTodoComplete(e, todos[selectedTodoIndex]?.id)
+                      handleToggleTodoComplete(e, todos[selectedTodoIndex]?._id)
                     }
                   />
                 </div>
@@ -168,7 +168,9 @@ function TodoList() {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={() => handleDeleteTodo(todos[selectedTodoIndex]?.id)}
+                  onClick={() =>
+                    handleDeleteTodo(todos[selectedTodoIndex]?._id)
+                  }
                 >
                   Delete
                 </Button>

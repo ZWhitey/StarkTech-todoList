@@ -1,8 +1,11 @@
+import { Types } from 'mongoose';
+
 export class CreateTodoDto {
   title: string;
   description: string;
   done: boolean;
   dueDate: Date;
-  watcher?: number[];
-  assignee?: number[];
+  owner: Types.ObjectId;
+  watcher?: Types.ObjectId[];
+  assignee?: Types.ObjectId[];
 }
