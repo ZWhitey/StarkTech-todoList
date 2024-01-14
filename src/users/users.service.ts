@@ -13,6 +13,10 @@ export class UsersService {
     return await this.userModel.findOne({ username });
   }
 
+  async findAll() {
+    return await this.userModel.find({}, { _id: 1, username: 1 });
+  }
+
   async create(
     username: string,
     password: string,

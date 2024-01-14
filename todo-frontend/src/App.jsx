@@ -85,7 +85,7 @@ function App() {
       <Button variant="danger" onClick={handleLogout}>
         Logout
       </Button>
-      <TodoList />;
+      <TodoList />
     </>
   );
 }

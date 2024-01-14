@@ -6,14 +6,22 @@ import axios from 'axios';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
+  const [userList, setUserList] = useState([]);
   const [selectedTodoIndex, setSelectedTodoIndex] = useState(null);
   useEffect(() => {
     getTodos();
+    getUserList();
   }, []);
 
   async function getTodos() {
     const res = await axios.get('http://localhost:3000/todo');
     setTodos(res.data);
+    console.log(res.data);
+  }
+
+  async function getUserList() {
+    const res = await axios.get('http://localhost:3000/users');
+    setUserList(res.data);
     console.log(res.data);
   }
 
