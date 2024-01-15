@@ -28,8 +28,9 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  findAll(@Request() req) {
+    const userId = new Types.ObjectId(req.user.sub);
+    return this.todoService.findAll(userId);
   }
 
   @UseGuards(AuthGuard)
@@ -40,13 +41,30 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+  async update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
+    const userId = new Types.ObjectId(req.user.sub);
+    const todo = await this.todoService.findOne(new Types.ObjectId(id));
+    if (
+      todo.owner !== userId &&
+      todo.assignee.every((assignee) => assignee !== userId)
+    ) {
+      throw new Error('Not authorized');
+    }
     return this.todoService.update(new Types.ObjectId(id), updateTodoDto);
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Request() req, @Param('id') id: string) {
+    const userId = new Types.ObjectId(req.user.sub);
+    const todo = await this.todoService.findOne(new Types.ObjectId(id));
+    if (todo.owner !== userId) {
+      throw new Error('Not authorized');
+    }
     return this.todoService.remove(new Types.ObjectId(id));
   }
 }

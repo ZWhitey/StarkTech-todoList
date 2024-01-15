@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo, TodoDocument } from '../schemas/todo.schema';
-import { Model, Types } from 'mongoose';
+import { Model, Types, FilterQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
@@ -18,8 +18,15 @@ export class TodoService {
     return await this.todoModel.create(newTodo);
   }
 
-  async findAll() {
-    return await this.todoModel.find();
+  async findAll(owner: Types.ObjectId) {
+    const query: FilterQuery<TodoDocument> = {
+      $or: [
+        { owner },
+        { watcher: { $in: [owner] } },
+        { assignee: { $in: [owner] } },
+      ],
+    };
+    return await this.todoModel.find(query);
   }
 
   async findOne(id: Types.ObjectId) {
