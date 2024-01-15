@@ -9,4 +9,5 @@ export class Todo {
   public readonly owner: Types.ObjectId;
   public readonly watcher?: Types.ObjectId[];
   public readonly assignee?: Types.ObjectId[];
+  public readonly parent?: Types.ObjectId;
 }

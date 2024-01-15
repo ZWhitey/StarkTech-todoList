@@ -23,6 +23,9 @@ export class TodoController {
   @Post()
   create(@Request() req, @Body() createTodoDto: CreateTodoDto) {
     const userId = new Types.ObjectId(req.user.sub);
+    if (createTodoDto.parent) {
+      createTodoDto.parent = new Types.ObjectId(createTodoDto.parent);
+    }
     return this.todoService.create({ owner: userId, ...createTodoDto });
   }
 

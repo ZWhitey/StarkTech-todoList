@@ -8,4 +8,5 @@ export class CreateTodoDto {
   owner: Types.ObjectId;
   watcher?: Types.ObjectId[];
   assignee?: Types.ObjectId[];
+  parent?: Types.ObjectId;
 }
