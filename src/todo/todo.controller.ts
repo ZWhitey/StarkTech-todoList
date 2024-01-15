@@ -53,7 +53,7 @@ export class TodoController {
     const todo = await this.todoService.findOne(new Types.ObjectId(id));
     if (
       todo.owner !== userId &&
-      todo.assignee.every((assignee) => assignee !== userId)
+      todo.assignee.some((assignee) => assignee !== userId)
     ) {
       throw new Error('Not authorized');
     }
