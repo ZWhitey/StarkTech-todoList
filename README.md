@@ -72,10 +72,11 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 
-## 任務到期提醒
+## 部屬
 
-建立一個 notification service，可以依照不同裝置需求串接服務。例如：email 使用 aws ses，mobile 使用 fcm 等等。
+環境使用 docker compose 建立，只需要在安裝好 docker 的環境中使用 `docker compose up` 即可啟動完整服務
 
+環境中包含 nest server 及 mongodb，啟動後預設開啟 3000 port，可以使用 [http://localhost:3000](http://localhost:3000) 測試
 
 ## 定時重複任務
 
@@ -84,4 +85,14 @@ Nest is [MIT licensed](LICENSE).
 ### 流程
 1. 設定任務執行時間、function
 2. 到指定時間後 agenda 自動執行 function
+
+## 任務到期提醒
+
+建立一個 notification service，可以依照不同裝置需求串接服務。例如：email 使用 aws ses，mobile 使用 fcm，web 使用 websocket 等等。
+
+### 流程
+如果新增或編輯 todo 時有更新期限，使用 agenda 註冊新任務去通知 notification service 發通知給使用者，可以依照使用者設定決定需要發送到什麼裝置上，例如：使用者設定 email service 會發送 api 到 aws ses 請求發送 email 到使用者設定的信箱。
+
+
+
 
