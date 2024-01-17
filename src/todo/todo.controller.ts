@@ -15,7 +15,23 @@ import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import {
+  ApiBearerAuth,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 
+class GetParams {
+  @ApiProperty()
+  owner: string;
+  @ApiProperty()
+  assignee: string;
+  @ApiPropertyOptional()
+  startDate: Date;
+  @ApiPropertyOptional()
+  endDate: Date;
+}
+@ApiBearerAuth()
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
@@ -32,18 +48,25 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll(@Request() req, @Query() query: any) {
-    if (query.owner) {
-      query.owner = new Types.ObjectId(query.owner);
+  findAll(@Request() req, @Query() parms: GetParams) {
+    let ownerId, assigneeId;
+    if (typeof parms.owner === 'string') {
+      ownerId = new Types.ObjectId(parms.owner.toString());
     }
-    if (query.assignee) {
-      query.assignee = new Types.ObjectId(query.assignee);
+    if (typeof parms.assignee === 'string') {
+      assigneeId = new Types.ObjectId(parms.assignee.toString());
+    }
+    if (parms.startDate) {
+      parms.startDate = new Date(parms.startDate.toString());
+    }
+    if (parms.endDate) {
+      parms.endDate = new Date(parms.endDate.toString());
     }
     return this.todoService.findAll(
-      query.owner,
-      query.assignee,
-      query.startDate,
-      query.endDate,
+      ownerId,
+      assigneeId,
+      parms.startDate,
+      parms.endDate,
     );
   }
 
@@ -63,7 +86,7 @@ export class TodoController {
     const userId = new Types.ObjectId(req.user.sub);
     const todo = await this.todoService.findOne(new Types.ObjectId(id));
     if (
-      todo.owner !== userId &&
+      !userId.equals(todo.owner) &&
       todo.assignee.some((assignee) => assignee !== userId)
     ) {
       throw new Error('Not authorized');

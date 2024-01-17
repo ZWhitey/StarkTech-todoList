@@ -51,6 +51,9 @@ export class TodoService {
         await this.todoModel.updateOne({ _id: todo.parent }, { done: true });
       }
     }
+    if (updateTodoDto.dueDate) {
+      updateTodoDto.dueDate = new Date(updateTodoDto.dueDate);
+    }
 
     return await todo.updateOne(updateTodoDto);
   }
