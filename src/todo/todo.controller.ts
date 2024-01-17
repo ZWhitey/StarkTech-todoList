@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { TodoService } from './todo.service';
@@ -31,9 +32,19 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll(@Request() req) {
-    const userId = new Types.ObjectId(req.user.sub);
-    return this.todoService.findAll(userId);
+  findAll(@Request() req, @Query() query: any) {
+    if (query.owner) {
+      query.owner = new Types.ObjectId(query.owner);
+    }
+    if (query.assignee) {
+      query.assignee = new Types.ObjectId(query.assignee);
+    }
+    return this.todoService.findAll(
+      query.owner,
+      query.assignee,
+      query.startDate,
+      query.endDate,
+    );
   }
 
   @UseGuards(AuthGuard)

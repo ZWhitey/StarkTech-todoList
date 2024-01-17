@@ -3,6 +3,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -14,7 +15,12 @@ function TodoList() {
   }, []);
 
   async function getTodos() {
-    const res = await axios.get('http://localhost:3000/todo');
+    const token = localStorage.getItem('access_token');
+    const decoded = jwtDecode(token);
+
+    const res = await axios.get(
+      `http://localhost:3000/todo?owner=${decoded.sub}`,
+    );
     setTodos(res.data);
     console.log(res.data);
   }
