@@ -71,3 +71,17 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## 任務到期提醒
+
+建立一個 notification service，可以依照不同裝置需求串接服務。例如：email 使用 aws ses，mobile 使用 fcm 等等。
+
+
+## 定時重複任務
+
+使用 [agenda](https://github.com/agenda/agenda) 套件處理排程工作，他提供指定時間執行、定期重複執行功能，所有排程的資料都是儲存在資料庫中，不會因為 server 重啟、停止等等問題遺失資料。此外在多主機環境中他有 lock 可以確保工作不會重複執行，執行工作也不會限制在特定機器中避免單點故障排程就不會執行。
+
+### 流程
+1. 設定任務執行時間、function
+2. 到指定時間後 agenda 自動執行 function
+
