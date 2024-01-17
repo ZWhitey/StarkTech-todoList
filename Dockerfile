@@ -18,9 +18,11 @@ COPY ./tsconfig*.json ./tsconfig.json
 
 COPY ./nest-cli.json ./nest-cli.json
 
-RUN pnpm i
+RUN pnpm i && pnpm run build
 
-RUN pnpm run build
+COPY todo-frontend ./todo-frontend
+
+RUN cd todo-frontend && pnpm i && pnpm run build
 
 FROM node:20-alpine as production
 
@@ -37,6 +39,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
 
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+COPY --from=builder /app/client ./client
 
 RUN pnpm i --prod
 
