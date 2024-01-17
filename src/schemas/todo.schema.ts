@@ -28,6 +28,9 @@ export class Todo {
 
   @Prop()
   assignee?: Types.ObjectId[];
+
+  @Prop()
+  parent?: Types.ObjectId;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);

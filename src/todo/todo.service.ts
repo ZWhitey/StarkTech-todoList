@@ -34,7 +34,18 @@ export class TodoService {
   }
 
   async update(id: Types.ObjectId, updateTodoDto: UpdateTodoDto) {
-    return await this.todoModel.findByIdAndUpdate(id, updateTodoDto);
+    const todo = await this.todoModel.findById(id);
+    if (updateTodoDto.done && todo.parent) {
+      const query: FilterQuery<TodoDocument> = {
+        $and: [{ parent: todo.parent }, { _id: { $ne: todo._id } }],
+      };
+      const children = await this.todoModel.find(query);
+      if (children.every((child) => child.done)) {
+        await this.todoModel.updateOne({ _id: todo.parent }, { done: true });
+      }
+    }
+
+    return await todo.updateOne(updateTodoDto);
   }
 
   async remove(id: Types.ObjectId) {

@@ -30,10 +30,12 @@ function TodoList() {
     const title = e.target[0].value;
     const description = e.target[1].value;
     const dueDate = e.target[2].value;
+    const isSubtask = e.target[3].checked;
     const res = await axios.post('http://localhost:3000/todo', {
       title,
       description,
       due_date: dueDate,
+      parent: isSubtask ? todos[selectedTodoIndex]?._id : null,
     });
     setTodos([...todos, res.data]);
   }
@@ -82,6 +84,8 @@ function TodoList() {
           <input type="text" placeholder="Title" />
           <input type="text" placeholder="Description" />
           <input type="date" />
+          <label>Subtask:</label>
+          <input type="checkbox" />
           <button type="submit">Add</button>
         </form>
       </div>
