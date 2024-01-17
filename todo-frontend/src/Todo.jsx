@@ -40,7 +40,7 @@ function TodoList() {
     const res = await axios.post('http://localhost:3000/todo', {
       title,
       description,
-      due_date: dueDate,
+      dueDate: dueDate,
       parent: isSubtask ? todos[selectedTodoIndex]?._id : null,
     });
     setTodos([...todos, res.data]);
@@ -55,7 +55,7 @@ function TodoList() {
     const res = await axios.patch(`http://localhost:3000/todo/${id}`, {
       title,
       description,
-      due_date: dueDate,
+      dueDate: dueDate,
     });
     await getTodos();
   }
