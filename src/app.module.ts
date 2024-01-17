@@ -6,12 +6,14 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TodoModule } from './todo/todo.module';
 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/todo';
+
 @Module({
   imports: [
     AuthModule,
     UsersModule,
     TodoModule,
-    MongooseModule.forRoot('mongodb://localhost/todo'),
+    MongooseModule.forRoot(MONGO_URI),
   ],
   controllers: [AppController],
   providers: [AppService],
