@@ -65,7 +65,7 @@ export class TodoController {
   async remove(@Request() req, @Param('id') id: string) {
     const userId = new Types.ObjectId(req.user.sub);
     const todo = await this.todoService.findOne(new Types.ObjectId(id));
-    if (todo.owner !== userId) {
+    if (!userId.equals(todo.owner)) {
       throw new Error('Not authorized');
     }
     return this.todoService.remove(new Types.ObjectId(id));
