@@ -76,7 +76,7 @@ Nest is [MIT licensed](LICENSE).
 
 環境使用 docker compose 建立，只需要在安裝好 docker 的環境中使用 `docker compose up` 即可啟動完整服務
 
-環境中包含 nest server 及 mongodb，啟動後預設開啟 3000 port，可以使用 [http://localhost:3000](http://localhost:3000) 測試
+環境中包含 nest server 及 mongodb，啟動後預設開啟 3000 port，可以使用 [http://localhost:3000](http://localhost:3000) 測試，[http://localhost:3000/api](http://localhost:3000/api) 可以開啟 swagger api 測試頁面
 
 ## 定時重複任務
 
