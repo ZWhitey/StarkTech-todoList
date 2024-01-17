@@ -18,12 +18,19 @@ export class TodoService {
     return await this.todoModel.create(newTodo);
   }
 
-  async findAll(owner: Types.ObjectId) {
+  async findAll(
+    owner: Types.ObjectId,
+    assignee: Types.ObjectId,
+    startDate?: Date,
+    endDate?: Date,
+  ) {
     const query: FilterQuery<TodoDocument> = {
+      ...(startDate &&
+        endDate && { dueDate: { $gte: startDate, $lte: endDate } }),
       $or: [
         { owner },
         { watcher: { $in: [owner] } },
-        { assignee: { $in: [owner] } },
+        { assignee: { $in: [assignee] } },
       ],
     };
     return await this.todoModel.find(query);
